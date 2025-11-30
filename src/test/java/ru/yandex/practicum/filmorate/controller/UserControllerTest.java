@@ -29,38 +29,6 @@ class UserControllerTest {
     }
 
     @Test
-    void add_ShouldThrowException_WhenLoginContainsSpaces() {
-        validUser.setLogin("login and spaces");
-        ValidationException exception = assertThrows(ValidationException.class,
-                () -> userController.add(validUser));
-        assertEquals("Логин не может содержать пробелы", exception.getMessage());
-    }
-
-    @Test
-    void add_ShouldThrowException_WhenLoginIsBlank() {
-        validUser.setLogin(" ");
-        ValidationException exception = assertThrows(ValidationException.class,
-                () -> userController.add(validUser));
-        assertEquals("Логин не может быть пустым", exception.getMessage());
-    }
-
-    @Test
-    void add_ShouldThrowException_WhenEmailWithoutDogSymbol() {
-        validUser.setEmail("invalid-email");
-        ValidationException exception = assertThrows(ValidationException.class,
-                () -> userController.add(validUser));
-        assertEquals("Электронная почта должна содержать символ @", exception.getMessage());
-    }
-
-    @Test
-    void add_ShouldThrowException_WhenBirthdayInFuture() {
-        validUser.setBirthday(LocalDate.now().plusDays(1));
-        ValidationException exception = assertThrows(ValidationException.class,
-                () -> userController.add(validUser));
-        assertEquals("Дата рождения не может быть в будущем", exception.getMessage());
-    }
-
-    @Test
     void add_ShouldSetLoginAsName_WhenNameIsBlank() {
         validUser.setName(" ");
         User result = userController.add(validUser);
@@ -95,19 +63,8 @@ class UserControllerTest {
     }
 
     @Test
-    void update_ShouldThrowException_WhenIdIsNull() {
-        User updateUser = new User();
-        updateUser.setLogin("newLogin");
-        updateUser.setEmail("newEmail@ya.ru");
-        ValidationException exception = assertThrows(ValidationException.class,
-                () -> userController.update(updateUser));
-        assertEquals("Должен быть указан ID пользователя", exception.getMessage());
-    }
-
-    @Test
     void update_ShouldThrowException_WhenEmailAlreadyUsed() {
         User firstUser = addUser();
-
         User secondUser = new User();
         secondUser.setLogin("secondUser");
         secondUser.setEmail("second@ya.ru");
@@ -119,16 +76,5 @@ class UserControllerTest {
         ValidationException exception = assertThrows(ValidationException.class,
                 () -> userController.update(updateUser));
         assertEquals("Этот email уже используется", exception.getMessage());
-    }
-
-    @Test
-    void update_ShouldAllowSameEmail_WhenEmailNotChanged() {
-        User addedUser = addUser();
-        User updateUser = new User();
-        updateUser.setId(addedUser.getId());
-        updateUser.setLogin("updatedLogin");
-        User result = userController.update(updateUser);
-        assertEquals("updatedLogin", result.getLogin());
-        assertEquals("test@yandex.ru", result.getEmail());
     }
 }

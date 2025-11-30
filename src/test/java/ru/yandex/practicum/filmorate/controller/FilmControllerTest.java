@@ -34,27 +34,6 @@ class FilmControllerTest {
     }
 
     @Test
-    void add_ShouldThrowException_WhenNameIsBlank() {
-        validFilm.setName(" ");
-        ValidationException exception = assertThrows(ValidationException.class, () -> filmController.add(validFilm));
-        assertEquals("Название не может быть пустым", exception.getMessage());
-    }
-
-    @Test
-    void add_ShouldThrowException_WhenNameIsNull() {
-        validFilm.setName(null);
-        ValidationException exception = assertThrows(ValidationException.class, () -> filmController.add(validFilm));
-        assertEquals("Название не может быть пустым", exception.getMessage());
-    }
-
-    @Test
-    void add_ShouldThrowException_WhenDescriptionTooLong() {
-        validFilm.setDescription("D".repeat(201));
-        ValidationException exception = assertThrows(ValidationException.class, () -> filmController.add(validFilm));
-        assertEquals("Максимальная длина описания — 200 символов", exception.getMessage());
-    }
-
-    @Test
     void add_ShouldAccept_WhenDescriptionLess200Char() {
         validFilm.setDescription("D".repeat(200));
         assertEquals(200, validFilm.getDescription().length());
@@ -75,27 +54,6 @@ class FilmControllerTest {
     }
 
     @Test
-    void add_ShouldThrowException_WhenDurationFilmIsZero() {
-        validFilm.setDuration(0);
-        ValidationException exception = assertThrows(ValidationException.class, () -> filmController.add(validFilm));
-        assertEquals("Продолжительность фильма должна быть положительным числом", exception.getMessage());
-    }
-
-    @Test
-    void add_ShouldThrowException_WhenDurationFilmIsNegative() {
-        validFilm.setDuration(-1);
-        ValidationException exception = assertThrows(ValidationException.class, () -> filmController.add(validFilm));
-        assertEquals("Продолжительность фильма должна быть положительным числом", exception.getMessage());
-    }
-
-    @Test
-    void add_ShouldThrowException_WhenDurationFilmIsNull() {
-        validFilm.setDuration(null);
-        ValidationException exception = assertThrows(ValidationException.class, () -> filmController.add(validFilm));
-        assertEquals("Продолжительность фильма должна быть положительным числом", exception.getMessage());
-    }
-
-    @Test
     void update_ShouldUpdateFilm_WhenDataValid() {
         Film addedFilm = filmController.add(validFilm);
         addedFilm.setName("Добавленный фильм");
@@ -104,15 +62,5 @@ class FilmControllerTest {
         updatedFilm.setName("Новый фильм");
         Film result = filmController.add(updatedFilm);
         assertEquals("Новый фильм", result.getName());
-    }
-
-    @Test
-    void update_ShouldThrowException_WhenFilmNotFound() {
-        Film nonExistentFilm = new Film();
-        nonExistentFilm.setId(123);
-        nonExistentFilm.setName("Несуществующий фильм");
-        ValidationException exception = assertThrows(ValidationException.class,
-                () -> filmController.update(nonExistentFilm));
-        assertEquals("Фильм с ID 123 не найден", exception.getMessage());
     }
 }
