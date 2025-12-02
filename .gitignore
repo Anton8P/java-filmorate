@@ -44,3 +44,24 @@ build/
 
 *.db
 db/*
+
+### Maven ###
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+### Logs ###
+logs/
+*.log.*
+!logs/.gitkeep
+
+### Temporary files ###
+*.tmp
+*.temp
+
