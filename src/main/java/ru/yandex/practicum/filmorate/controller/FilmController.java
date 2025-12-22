@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.validation.CreateGroup;
 import ru.yandex.practicum.filmorate.validation.UpdateGroup;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,6 +27,8 @@ import java.util.List;
 @Slf4j
 public class FilmController {
     private final FilmService filmService;
+    private static final LocalDate CINEMA_BIRTHDAY = LocalDate.of(
+            1895, 12, 28);
 
     public FilmController(FilmService filmService) {
         this.filmService = filmService;
@@ -45,6 +49,7 @@ public class FilmController {
     @PostMapping
     public Film add(@Validated(CreateGroup.class) @RequestBody Film film) {
         log.info("POST /films - добавление фильма: {}", film.getName());
+        validateReleaseDate(film.getReleaseDate());
         Film savedFilm = filmService.addFilm(film);
         log.info("POST /films - запрос обработан успешно");
         return savedFilm;
@@ -54,6 +59,7 @@ public class FilmController {
     public Film update(@Validated(UpdateGroup.class) @RequestBody Film film) {
         log.info("PUT /films - обновление фильма ID: {}, название: {}",
                 film.getId(), film.getName());
+        validateReleaseDate(film.getReleaseDate());
         Film updatedFilm = filmService.updateFilm(film);
         log.info("PUT /films - фильм успешно обновлен");
         return updatedFilm;
@@ -76,6 +82,12 @@ public class FilmController {
             defaultValue = "10") Integer count) {
         log.info("GET /films/popular?count={}", count);
         return filmService.getPopularFilms(count);
+    }
+
+    private void validateReleaseDate(LocalDate releaseDate) {
+        if (releaseDate != null && releaseDate.isBefore(CINEMA_BIRTHDAY)) {
+            throw new ValidationException("Дата релиза фильма не может быть раньше 28 декабря 1895 года");
+        }
     }
 
 }

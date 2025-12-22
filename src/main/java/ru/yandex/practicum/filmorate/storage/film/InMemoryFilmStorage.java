@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -10,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
@@ -30,27 +28,14 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film add(Film film) {
-        if (film == null) {
-            throw new IllegalArgumentException("Фильм не может быть null");
-        }
-        if (film.getId() != null) {
-            throw new IllegalArgumentException("При создании фильма ID должен быть null");
-        }
         long newId = getNextId();
         film.setId(newId);
         films.put(newId, film);
-        log.debug("Фильм добавлен: ID: {}, название: {}", newId, film.getName());
         return film;
     }
 
     @Override
     public Film update(Film film) {
-        if (film == null) {
-            throw new IllegalArgumentException("Фильм не может быть null");
-        }
-        if (film.getId() == null) {
-            throw new IllegalArgumentException("ID не может быть null при обновлении");
-        }
         films.put(film.getId(), film);
         return film;
     }

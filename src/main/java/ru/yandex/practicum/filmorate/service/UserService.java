@@ -121,9 +121,6 @@ public class UserService {
     }
 
     private void validateEmailForCreate(User user) {
-        if (user.getEmail() == null) {
-            throw new ValidationException("Email не может быть null");
-        }
         boolean emailUsedByOther = userStorage.findAll().stream()
                 .anyMatch(existingUser -> existingUser.getEmail().equalsIgnoreCase(user.getEmail()));
         if (emailUsedByOther) {
@@ -132,9 +129,6 @@ public class UserService {
     }
 
     private void validateEmailForUpdate(String email, Long userId) {
-        if (email == null) {
-            throw new ValidationException("Email не может быть null");
-        }
         boolean emailUsedByOther = userStorage.findAll().stream()
                 .filter(existingUser -> existingUser.getId() != null && !existingUser.getId().equals(userId))
                 .filter(existingUser -> existingUser.getEmail() != null)
@@ -144,4 +138,3 @@ public class UserService {
         }
     }
 }
-
