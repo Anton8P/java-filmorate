@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,12 +12,14 @@ import ru.yandex.practicum.filmorate.validation.CreateGroup;
 import ru.yandex.practicum.filmorate.validation.UpdateGroup;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
     @Null(message = "ID должен быть null при создании", groups = CreateGroup.class)
     @NotNull(message = "ID обязателен при обновлении", groups = UpdateGroup.class)
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "Email не может быть пустым", groups = CreateGroup.class)
     @Email(message = "Email должен быть в правильном формате", groups = {CreateGroup.class, UpdateGroup.class})
@@ -31,4 +34,23 @@ public class User {
     @NotNull(message = "Дата рождения обязательна", groups = {CreateGroup.class, UpdateGroup.class})
     @PastOrPresent(message = "Дата рождения не может быть в будущем", groups = {CreateGroup.class, UpdateGroup.class})
     private LocalDate birthday;
+
+    @JsonIgnore
+    private final Set<Long> friends = new HashSet<>();
+
+    public Set<Long> getFriends() {
+        return new HashSet<>(this.friends);
+    }
+
+    public void addFriend(Long friendId) {
+        this.friends.add(friendId);
+    }
+
+    public void removeFriend(Long friendId) {
+        this.friends.remove(friendId);
+    }
+
+    public boolean hasFriend(Long friendId) {
+        return this.friends.contains(friendId);
+    }
 }
